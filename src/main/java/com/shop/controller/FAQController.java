@@ -44,7 +44,7 @@ public class FAQController {
     public String readFaq(Model model) {
         List<FAQDto> FAQDtoList = faqService.getFAQList();
 
-        model.addAttribute("faqSearchDto",new FAQSearchDto());
+        model.addAttribute("faqsearchdto",new FAQSearchDto());
         model.addAttribute("FAQList", FAQDtoList);
 
         return "cscenter/faq";
