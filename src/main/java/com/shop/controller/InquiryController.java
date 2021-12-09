@@ -5,6 +5,10 @@ import com.shop.dto.FAQSearchDto;
 import com.shop.dto.InquiryFormDto;
 import com.shop.service.CommentService;
 import com.shop.service.InquiryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +20,13 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 문의사항 컨트롤러
+ *
+ * @author 함형연
+ * @version 1.0
+ */
+@Tag(name = "문의사항", description = "문의사항 관련 요청 처리")
 @Controller
 @RequiredArgsConstructor
 public class InquiryController {
@@ -23,7 +34,17 @@ public class InquiryController {
     private final InquiryService inquiryService;
     private final CommentService commentService;
 
-    /* 문의 사항 입력 폼 조회 */
+    /**
+     * 문의 사항을 입력받는 폼을 조회하는 메소드
+     *
+     * @param model view로 전달할 데이터를 담은 객체
+     *
+     * @return inquiryForm 페이지 반환
+     */
+    @Operation(summary = "문의 사항을 입력받는 폼을 조회", description = "문의 사항을 입력받는 폼을 조회하는 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "inquiryForm 페이지 반환")
+    })
     @GetMapping(value = "/cscenter/voc")
     public String saveInquiryForm(Model model) {
         model.addAttribute("inquiryFormDto",new InquiryFormDto());
@@ -32,7 +53,19 @@ public class InquiryController {
         return "cscenter/inquiryForm";
     }
 
-    /* 문의 사항 저장 */
+    /**
+     * 입력받은 문의 사항을 저장하는 메소드
+     *
+     * @param inquiryFormDto 입력받은 문의사항의 정보를 담은 객체
+     * @param bindingResult 바인딩의 에러 결과
+     * @param model view로 전달할 데이터를 담은 객체
+     *
+     * @return voclist페이지 리다이렉트
+     */
+    @Operation(summary = "입력받은 문의 사항을 저장", description = "입력받은 문의 사항을 저장하는 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공: voclist페이지 리다이렉트<br>실패: inquiryForm 페이지 반환")
+    })
     @PostMapping(value="/cscenter/voc")
     public String saveInquiry(@Valid InquiryFormDto inquiryFormDto, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()) {
@@ -50,7 +83,18 @@ public class InquiryController {
         return "redirect:/cscenter/voclist";
     }
 
-    /* 로그인한 멤버의 문의 사항 리스트 조회 */
+    /**
+     * 현재 로그인한 멤버의 문의 사항 리스트를 조회하는 메소드
+     *
+     * @param principal 현재 로그인한 회원
+     * @param model view로 전달할 데이터를 담은 객체
+     *
+     * @return voclist페이지 리다이렉트
+     */
+    @Operation(summary = "현재 로그인한 멤버의 문의 사항 리스트를 조회", description = "현재 로그인한 멤버의 문의 사항 리스트를 조회하는 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "voclist페이지 리다이렉트")
+    })
     @GetMapping(value = "/cscenter/voclist")
     public String readInquiry(Model model, Principal principal) {
         List<InquiryFormDto> InquiryList = inquiryService.getInquiryList(principal.getName());
@@ -61,7 +105,18 @@ public class InquiryController {
         return "cscenter/vocList";
     }
 
-    /* 파라미터로 받은 아이디에 해당하는 문의사항 자세히 보기 */
+    /**
+     * 선택한 문의사항의 세부사항을 보여주는 메서드
+     *
+     * @param id 세부사항을 볼 문의사항 id
+     * @param model view로 전달할 데이터를 담은 객체
+     *
+     * @return voclist페이지 리다이렉트
+     */
+    @Operation(summary = "선택한 문의사항의 세부사항 조회", description = "선택한 문의사항의 세부사항을 보여주는 메서드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "voclist페이지 리다이렉트")
+    })
     @GetMapping(value = "/cscenter/voclist/{id}")
     public String readDetailInquiry(@PathVariable("id") Long id, Model model) {
         InquiryFormDto inquiryFormDto = inquiryService.getInquiryDtl(id);
@@ -75,7 +130,18 @@ public class InquiryController {
         return "cscenter/inquiryDtl";
     }
 
-    /* 문의 사항 수정 폼 조회 */
+    /**
+     * 선택한 문의사항의 수정 폼을 조회하는 메소드
+     *
+     * @param id 수정할 문의사항 id
+     * @param model view로 전달할 데이터를 담은 객체
+     *
+     * @return voclist페이지 리다이렉트
+     */
+    @Operation(summary = "선택한 문의사항의 수정 폼을 조회", description = "선택한 문의사항의 수정 폼을 조회하는 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "voclist페이지 리다이렉트")
+    })
     @GetMapping(value = "/cscenter/voclist/edit/{id}")
     public String modifyInquiryForm(@PathVariable("id") Long id, Model model) {
         InquiryFormDto inquiryFormDto = inquiryService.getInquiryDtl(id);
@@ -86,7 +152,17 @@ public class InquiryController {
         return "cscenter/inquiryEdit";
     }
 
-    /* 문의사항 수정 */
+    /**
+     * 문의사항을 수정하는 메소드
+     *
+     * @param inquiryFormDto 문의사항을 수정한 정보를 담은 객체
+     *
+     * @return voclist페이지 리다이렉트
+     */
+    @Operation(summary = "문의사항을 수정", description = "문의사항을 수정하는 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "voclist페이지 리다이렉트")
+    })
     @PostMapping(value = "/cscenter/voclist/edit/{id}")
     public String modifyInquiry(@Valid InquiryFormDto inquiryFormDto) {
         inquiryService.updateInquiry(inquiryFormDto);
@@ -94,7 +170,17 @@ public class InquiryController {
         return "redirect:/cscenter/voclist/";
     }
 
-    /* 문의 사항 삭제 */
+    /**
+     * 문의사항을 삭제하는 메소드
+     *
+     * @param inquiryIdxArray 삭제할 문의사항 ID를 담은 객체
+     *
+     * @return
+     */
+    @Operation(summary = "문의사항을 삭제", description = "문의사항을 삭제하는 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "")
+    })
     @ResponseBody
     @DeleteMapping("/cscenter/voclist")
     public String removeInquiry(@RequestBody List<String> inquiryIdxArray) {
@@ -111,7 +197,17 @@ public class InquiryController {
         return "";
     }
 
-    /* admin에서 모든 멤버의 문의 사항 리스트 조회 */
+    /**
+     * admin계정에서 모든 멤버의 문의 사항 리스트를 조회하는 메소드
+     *
+     * @param model view로 전달할 데이터를 담은 객체
+     *
+     * @return adminvocList페이지 반환
+     */
+    @Operation(summary = "관리자 모든 회원 문의 사항 조회", description = "admin계정에서 모든 멤버의 문의 사항 리스트를 조회하는 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "adminvocList페이지 반환")
+    })
     @GetMapping(value = "/admin/cscenter/voclist")
     public String adminReadInquiry(Model model) {
         List<InquiryFormDto> InquiryList = inquiryService.getAllInquiryList();
@@ -122,7 +218,18 @@ public class InquiryController {
         return "cscenter/adminvocList";
     }
 
-    /* admin에서 파라미터로 받은 아이디에 해당하는 문의사항 자세히 보기 */
+    /**
+     * admin계정에서 선택한 문의사항의 세부사항을 보여주는 메소드
+     *
+     * @param id 세부사항을 볼 문의사항 id
+     * @param model view로 전달할 데이터를 담은 객체
+     *
+     * @return admininquiryDtl페이지 반환
+     */
+    @Operation(summary = "관리자 회원 문의 세부사항 조회", description = "admin계정에서 선택한 문의사항의 세부사항을 보여주는 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "admininquiryDtl페이지 반환")
+    })
     @GetMapping(value = "/admin/cscenter/voclist/{id}")
     public String adminReadDetailInquiry(@PathVariable("id") Long id, Model model) {
         InquiryFormDto inquiryFormDto = inquiryService.getInquiryDtl(id);

@@ -25,6 +25,7 @@
             .carousel-wrap,
             .carousel-inner > .item {
                 height: 400px;
+                background-position: center;
             }
             .margin{
                 margin-bottom: 30px;
@@ -72,20 +73,16 @@
                     <li data-target="#carouselControls" data-slide-to="1"></li>
                     <li data-target="#carouselControls" data-slide-to="2"></li>
                     <li data-target="#carouselControls" data-slide-to="3"></li>
+                    <li data-target="#carouselControls" data-slide-to="4"></li>
+                    <li data-target="#carouselControls" data-slide-to="5"></li>
                 </ol>
                 <div class="carousel-inner">
-                    <div class="carousel-item active item">
-                        <img class="d-block w-100 banner" th:src="@{/img/slide-1.jpg}" alt="Keyboard">
-                    </div>
-                    <div class="carousel-item item">
-                        <img class="d-block w-100 banner" th:src="@{/img/slide-2.jpg}" alt="Keyboard">
-                    </div>
-                    <div class="carousel-item item">
-                        <img class="d-block w-100 banner" th:src="@{/img/slide-3.jpg}" alt="Keyboard">
-                    </div>
-                    <div class="carousel-item item">
-                        <img class="d-block w-100 banner" th:src="@{/img/slide-4.jpg}" alt="Keyboard">
-                    </div>
+                    <div class="carousel-item active item" style="background-image: url(/img/slide-1.jpg)"></div>
+                    <div class="carousel-item item" style="background-image: url(/img/slide-2.jpg)"></div>
+                    <div class="carousel-item item" style="background-image: url(/img/slide-3.jpg)"></div>
+                    <div class="carousel-item item" style="background-image: url(/img/slide-4.jpg)"></div>
+                    <div class="carousel-item item" style="background-image: url(/img/slide-5.jpg)"></div>
+                    <div class="carousel-item item" style="background-image: url(/img/slide-6.jpg)"></div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-target="#carouselControls" data-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -97,66 +94,72 @@
                 </button>
             </div>
         </div>
-        <th:block th:each="category : ${categoryList}">
-            <a th:href="'/items/0?&searchCategory=' + ${category.getCateCode()}" th:text="${category.getCateName()}"></a>
-        </th:block>
-        <h2>베스트 상품</h2>
-        <th:block th:each="item : ${bestItemList}">
-            <div class="col-md-4 margin">
-                <div class="card">
+        <div class="main-category">
+            <th:block th:each="category : ${categoryList}">
+                <div class="main-category-item">
+                    <a th:href="'/items/0?&searchCategory=' + ${category.getCateCode()}" th:text="${category.getCateName()}"></a>
+                </div>
+            </th:block>
+        </div>
+        <h2 class="main-title">베스트 상품 <a th:href="@{/item/best/day}" class="main-best-link">일간</a><a th:href="@{/item/best/week}" class="main-best-link">주간</a><a th:href="@{/item/best/month}" class="main-best-link">월간</a></h2>
+        <div class="item-card-wrap">
+            <th:block th:each="item : ${bestItemList}">
+                <div class="item-card">
                     <a th:href="'/item/' +${item.itemId}" class="text-dark">
-                        <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" height="400">
-                        <div class="card-body">
-                            <h4 class="card-title">[[${item.itemNm}]]</h4>
-                            <p class="card-text">[[${item.itemDetail}]]</p>
-                            <h3 class="card-title text-danger">[[${#numbers.formatCurrency(item.price)}]]원</h3>
+                        <div class="item-card-img" th:style="'background-image: url(' + ${item.imgUrl} + ')'"></div>
+                        <div class="item-card-body">
+                            <div class="item-card-title">[[${item.itemNm}]]</div>
+                            <div class="item-card-text">[[${item.itemDetail}]]</div>
+                            <div class="item-card-price">[[${#numbers.formatCurrency(item.price)}]]</div>
                         </div>
                     </a>
                 </div>
-            </div>
-        </th:block>
-        <h2>역경매 상품</h2>
-        <div class="rauction-card" th:each="reverseAuction, status: ${reverseAuctionList}">
-            <div class="rauction-card-inner">
-                <div class="rauction-card-img" th:style="'background-image: url(' + ${reverseAuction.imgUrl} + ')'"></div>
-                <div class="rauction-card-text">
-                    <h4 class="rauction-card-title"><a th:href="@{/rauction/__${reverseAuction.id}__}" th:text="${reverseAuction.itemNm}"></a></h4>
-                    <ul class="rauction-card-props">
-                        <li><b>시작일 : </b><span th:text="${#temporals.format(reverseAuction.startTime, 'yyyy-MM-dd HH:mm')}" class="rauction-card-stime"></span></li>
-                        <li><b>자동 할인 시간 : </b><span th:text="${reverseAuction.timeUnit} + ' 시간'" class="rauction-card-time-unit"></span><span class="rauction-card-counter">(00:00:00)</span></li>
-                        <li><b>경매 단위 : </b><span th:text="${#numbers.formatCurrency(reverseAuction.priceUnit)}"></span></li>
-                        <li><b>시작 가격 : </b><span th:text="${#numbers.formatCurrency(reverseAuction.startPrice)}"></span></li>
-                        <li><b>최대 할인율 : </b><span th:text="${reverseAuction.maxRate} + '%'"></span></li>
-                    </ul>
-                    <div class="rauction-card-discount">
-                        <b th:text="${reverseAuction.discountDto.currentDiscountRate} + '%↓'" style="color: #F00;"></b>
-                        <small>(현재 <span th:text="${#numbers.formatCurrency(reverseAuction.discountDto.currentDiscountPrice)}"></span> 할인)</small>
-                    </div>
-                    <div class="rauction-card-price">
-                        <span>현재 가격</span>
-                        <b>
-                            <small class="text-danger" style="font-size: 14px;">(배송비 : <th:block th:text="${#numbers.formatCurrency(reverseAuction.itemShippingFee)}"></th:block>)</small>
-                            <th:block th:text="${#numbers.formatCurrency(reverseAuction.discountDto.currentPrice)}"></th:block>
-                        </b>
+            </th:block>
+        </div>
+        <h2 class="main-title">중고 상품</h2>
+        <div class="item-card-wrap">
+            <th:block th:each="usedItem, status: ${usedItemList}">
+                <div class="item-card">
+                    <a th:href="'/uitem/' +${usedItem.id}" class="text-dark">
+                        <div class="item-card-img" th:style="'background-image: url(' + ${usedItem.imgUrl} + ')'"></div>
+                        <div class="item-card-body">
+                            <div class="item-card-title">[[${usedItem.name}]]</div>
+                            <div class="item-card-text">[[${usedItem.detail}]]</div>
+                            <div class="item-card-price">[[${#numbers.formatCurrency(usedItem.price)}]]</div>
+                        </div>
+                    </a>
+                </div>
+            </th:block>
+        </div>
+        <h2 class="main-title">역경매 상품</h2>
+        <div class="rauction-cards">
+            <div class="rauction-card" th:each="reverseAuction, status: ${reverseAuctionList}">
+                <div class="rauction-card-inner">
+                    <div class="rauction-card-img" th:style="'background-image: url(' + ${reverseAuction.imgUrl} + ')'"></div>
+                    <div class="rauction-card-text">
+                        <h4 class="rauction-card-title"><a th:href="@{/rauction/__${reverseAuction.id}__}" th:text="${reverseAuction.itemNm}"></a></h4>
+                        <ul class="rauction-card-props">
+                            <li><b>시작일 : </b><span th:text="${#temporals.format(reverseAuction.startTime, 'yyyy-MM-dd HH:mm')}" class="rauction-card-stime"></span></li>
+                            <li><b>자동 할인 시간 : </b><span th:text="${reverseAuction.timeUnit} + ' 시간'" class="rauction-card-time-unit"></span></li>
+                            <li><b>경매 단위 : </b><span th:text="${#numbers.formatCurrency(reverseAuction.priceUnit)}"></span></li>
+                            <li><b>시작 가격 : </b><span th:text="${#numbers.formatCurrency(reverseAuction.startPrice)}"></span></li>
+                            <li><b>최대 할인율 : </b><span th:text="${reverseAuction.maxRate} + '%'"></span></li>
+                        </ul>
+                        <div class="rauction-card-discount">
+                            <b th:text="${reverseAuction.discountDto.currentDiscountRate} + '%↓'" style="color: #F00;"></b>
+                            <small>(현재 <span th:text="${#numbers.formatCurrency(reverseAuction.discountDto.currentDiscountPrice)}"></span> 할인)</small>
+                        </div>
+                        <div class="rauction-card-price">
+                            <span>현재 가격</span>
+                            <b>
+                                <small class="text-danger" style="font-size: 14px;">(배송비 : <th:block th:text="${#numbers.formatCurrency(reverseAuction.itemShippingFee)}"></th:block>)</small>
+                                <th:block th:text="${#numbers.formatCurrency(reverseAuction.discountDto.currentPrice)}"></th:block>
+                            </b>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <h2>중고 상품</h2>
-        <th:block th:each="usedItem, status: ${usedItemList}">
-            <div class="col-md-4 margin">
-                <div class="card">
-                    <a th:href="'/uitem/' + ${usedItem.id}" class="text-dark">
-                        <img th:src="${usedItem.imgUrl}" class="card-img-top" th:alt="${usedItem.name}" height="400">
-                        <div class="card-body">
-                            <h4 class="card-title">[[${usedItem.name}]]</h4>
-                            <p class="card-text">[[${usedItem.detail}]]</p>
-                            <h3 class="card-title text-danger">[[${#numbers.formatCurrency(usedItem.price)}]]</h3>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </th:block>
     </div>
 
 </html>

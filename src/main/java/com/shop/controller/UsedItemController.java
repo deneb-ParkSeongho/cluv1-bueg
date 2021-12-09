@@ -7,6 +7,10 @@ import com.shop.dto.UsedItemSearchDto;
 import com.shop.service.NaverShopService;
 import com.shop.service.UsedItemService;
 import groovy.util.logging.Slf4j;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +27,13 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 중고 상품 컨트롤러
+ *
+ * @author 이연
+ * @version 1.0
+ */
+@Tag(name = "중고 상품", description = "중고 상품 관련 요청 처리")
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -30,7 +41,20 @@ public class UsedItemController {
 
     private final UsedItemService usedItemService;
     private final NaverShopService naverShopService;
-
+    
+    /**
+     * 중고 상품 조회 페이지
+     *
+     * @param usedItemSearchDto 검색 필드 정보 객체
+     * @param page 페이징 번호
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 중고 상품 조회 페이지 뷰 경로
+     */
+    @Operation(summary = "중고 상품 조회 페이지", description = "중고 상품 조회 페이지 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "중고 상품 조회 페이지 뷰")
+    })
     @GetMapping(value = { "/uitems", "/uitems/{page}" })
     public String usedItemList(UsedItemSearchDto usedItemSearchDto, Optional<Integer> page, Model model) {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
@@ -43,6 +67,20 @@ public class UsedItemController {
         return "usedItem/usedItemList";
     }
 
+    /**
+     * 중고 상품 관리 페이지
+     *
+     * @param usedItemSearchDto 검색 필드 정보 객체
+     * @param page 페이징 번호
+     * @param principal 사용자 인증 정보 객체
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 중고 상품 관리 페이지 뷰 경로
+     */
+    @Operation(summary = "중고 상품 관리 페이지", description = "중고 상품 관리 페이지 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "중고 상품 관리 페이지 뷰")
+    })
     @GetMapping(value = { "/uitem/manage", "/uitem/manage/{page}" })
     public String usedItemMng(UsedItemSearchDto usedItemSearchDto, Optional<Integer> page, Principal principal, Model model) {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
@@ -55,6 +93,17 @@ public class UsedItemController {
         return "usedItem/usedItemMng";
     }
 
+    /**
+     * 중고 상품 등록 페이지
+     *
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 중고 상품 등록 페이지 뷰 경로
+     */
+    @Operation(summary = "중고 상품 등록 페이지", description = "중고 상품 등록 페이지 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "중고 상품 등록 페이지 뷰")
+    })
     @GetMapping(value = "/uitem/new")
     public String usedItemForm(Model model) {
         model.addAttribute("usedItemFormDto", new UsedItemFormDto());
@@ -62,6 +111,21 @@ public class UsedItemController {
         return "usedItem/usedItemForm";
     }
 
+    /**
+     * 중고 상품 등록 처리
+     *
+     * @param usedItemFormDto 사용자 입력 중고 상품 정보 객체
+     * @param bindingResult 사용자 입력값 오류 정보 객체
+     * @param usedItemImgFileList 중고 상품 업로드 이미지 파일 리스트
+     * @param principal 사용자 인증 정보 객체
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 성공: 중고 상품 조회 페이지 리다이렉션<br>실패: 중고 상품 등록 페이지 뷰 경로
+     */
+    @Operation(summary = "중고 상품 등록 처리", description = "중고 상품 등록 처리 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공: 중고 상품 조회 페이지 리다이렉션<br>실패: 중고 상품 등록 페이지 뷰 경로")
+    })
     @PostMapping(value = "/uitem/new")
     public String usedItemNew(@Valid UsedItemFormDto usedItemFormDto, BindingResult bindingResult, @RequestParam("usedItemImgFile") List<MultipartFile> usedItemImgFileList, Principal principal, Model model) {
         if(bindingResult.hasErrors()) {
@@ -87,6 +151,19 @@ public class UsedItemController {
         return "redirect:/uitems";
     }
 
+    /**
+     * 중고 상품 수정 페이지
+     *
+     * @param usedItemId 중고 상품 ID
+     * @param principal 사용자 인증 정보 객체
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 성공: 중고 상품 수정 페이지 뷰<br>실패: 메인 페이지 리다이렉션<br>실패: 중고 상품 등록 페이지 뷰
+     */
+    @Operation(summary = "중고 상품 수정 페이지", description = "중고 상품 수정 페이지 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공: 중고 상품 수정 페이지 뷰<br>실패: 메인 페이지 리다이렉션<br>실패: 중고 상품 등록 페이지 뷰")
+    })
     @GetMapping(value = "/uitem/update/{usedItemId}")
     public String usedItemUpdateForm(@PathVariable("usedItemId") Long usedItemId, Principal principal, Model model) {
         if(!usedItemService.validateUsedItem(usedItemId, principal.getName())) {
@@ -110,6 +187,21 @@ public class UsedItemController {
         return "usedItem/usedItemForm";
     }
 
+    /**
+     * 중고 상품 수정 처리
+     *
+     * @param usedItemFormDto 사용자 입력 중고 상품 정보 객체
+     * @param bindingResult 사용자 입력값 오류 정보 객체
+     * @param usedItemImgFileList 중고 상품 업로드 이미지 파일 리스트
+     * @param principal 사용자 인증 정보 객체
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 성공: 중고 상품 조회 페이지 리다이렉션<br>실패: 메인 페이지 리다이렉션<br>실패: 중고 상품 수정 페이지 뷰 경로
+     */
+    @Operation(summary = "중고 상품 수정 처리", description = "중고 상품 수정 처리 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공: 중고 상품 조회 페이지 리다이렉션<br>실패: 메인 페이지 리다이렉션<br>실패: 중고 상품 수정 페이지 뷰 경로")
+    })
     @PostMapping(value = "/uitem/update/{usedItemId}")
     public String usedItemUpdate(@Valid UsedItemFormDto usedItemFormDto, BindingResult bindingResult, @RequestParam("usedItemImgFile") List<MultipartFile> usedItemImgFileList, Principal principal, Model model) {
         if(!usedItemService.validateUsedItem(usedItemFormDto.getId(), principal.getName())) {
@@ -136,6 +228,18 @@ public class UsedItemController {
         return "redirect:/uitem/manage";
     }
 
+    /**
+     * 중고 상품 상세 보기 페이지
+     *
+     * @param usedItemId 중고 상품 ID
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 중고 상품 상세 보기 페이지 뷰 경로
+     */
+    @Operation(summary = "중고 상품 상세 보기 페이지", description = "중고 상품 상세 보기 페이지 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "중고 상품 상세 보기 페이지 뷰")
+    })
     @GetMapping(value = "/uitem/{usedItemId}")
     public String usedItemDtl(@PathVariable("usedItemId") Long usedItemId, Model model) {
         UsedItemFormDto usedItemFormDto = usedItemService.getUsedItemDtl(usedItemId);
@@ -145,6 +249,17 @@ public class UsedItemController {
         return "usedItem/usedItemDtl";
     }
 
+    /**
+     * 네이버 쇼핑 시세 정보 조회
+     *
+     * @param name 검색할 상품명을 담은 객체
+     *
+     * @return 네이버 쇼핑 시세 정보
+     */
+    @Operation(summary = "네이버 쇼핑 시세 조회", description = "네이버 쇼핑 시세 조회 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "네이버 쇼핑 시세 정보")
+    })
     @GetMapping(value = "/uitem/naverShopItems")
     public @ResponseBody List<NaverShopItemDto> getMarketItems(@RequestParam("name") String name) {
         return naverShopService.search(name);

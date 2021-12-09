@@ -41,6 +41,7 @@
 </th:block>
 
 <div layout:fragment="content">
+    <h2><span th:text="${title}" class="text-danger"></span> 베스트 상품</h2>
     <div class="row">
         <th:block th:each="item : ${items}">
             <div class="col-md-4 margin">

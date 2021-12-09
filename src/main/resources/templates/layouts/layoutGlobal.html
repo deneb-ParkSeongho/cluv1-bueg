@@ -4,13 +4,14 @@
       xmlns:sec="http//www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>GS ITM Keyboard</title>
+    <title>Bueg - Buy Everything</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <link th:href="@{/css/normalize.css}" rel="stylesheet">
+    <link th:href="@{/css/boxicons.min.css}" rel="stylesheet">
     <link th:href="@{/css/layoutGlobal.css}" rel="stylesheet">
     <th:block layout:fragment="css"></th:block>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -18,7 +19,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script src ="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
-
     <script>
         (function() {
             var w = window;
@@ -104,8 +104,16 @@
         </div>
         <div class="header">
             <div class="header-inner">
-                <a th:href="@{/}" class="header-logo"><img th:src="@{/img/logo_white.svg}" alt="GS ITM"> Bueg</a>
-                <ul class="header-menu">
+                <div class="header-top">
+                    <a th:href="@{/}" class="header-logo"><img th:src="@{/img/logo.png}" alt="Bueg"></a>
+                    <form th:action="@{/items}" class="header-search">
+                        <input name="searchQuery" type="text" placeholder="상품 검색...">
+                        <button>검색</button>
+                    </form>
+                </div>
+            </div>
+            <div class="header-menu">
+                <ul class="wrap">
                     <li><a th:href="@{/items}">상품 목록</a></li>
                     <li><a th:href="@{/rauctions}">역경매</a></li>
                     <li sec:authorize="isAuthenticated()"><a th:href="@{/bids}">역경매 참여 내역</a></li>
@@ -115,10 +123,6 @@
                     <li sec:authorize="hasAnyAuthority('ROLE_USER')"><a th:href="@{/cscenter}">고객센터</a></li>
                     <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"><a href="#admin">관리자</a></li>
                 </ul>
-                <form th:action="@{/items}" class="header-search">
-                    <input name="searchQuery" type="text" placeholder="상품 검색...">
-                    <button>검색</button>
-                </form>
             </div>
             <div class="header-submenu" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
                 <div class="header-submenu-inner">

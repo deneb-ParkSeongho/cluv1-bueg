@@ -121,6 +121,7 @@
 
     <div layout:fragment="content" class="content-mg">
 
+        <!--
         <div class="right-box">
             <select id="statSelect" class="custom-select" onchange="getStatus();">
                 <option value="">전체</option>
@@ -128,6 +129,7 @@
                 <option value="GIFT">선물</option>
             </select>
         </div>
+        -->
 
         <h2 class="mb-4">
             구매/선물 이력
@@ -170,10 +172,10 @@
                             <small class="text-danger">(배송비 : <th:block th:text="${#numbers.formatCurrency(orderItem.orderShippingFee)}"></th:block>)</small>
                         </div>
                     </div>
-                    <div th:if="${order.orderStatus == T(com.shop.constant.OrderStatus).ORDER and orderItem.reviewYn  == 'N'}">
+                    <div th:if="${order.orderStatus == T(com.shop.constant.OrderStatus).ORDER and orderItem.reviewYn  == 'N'}" class="order-review-btn">
                         <button type="button" class="btn btn-outline-secondary" th:onclick="'location.href=\''+@{/reviews/new/}+@{${orderItem.orderItemId}}+'\''">리뷰 작성</button>
                     </div>
-                    <div th:if="${order.orderStatus == T(com.shop.constant.OrderStatus).ORDER and orderItem.reviewYn == 'Y'}">
+                    <div th:if="${order.orderStatus == T(com.shop.constant.OrderStatus).ORDER and orderItem.reviewYn == 'Y'}" class="order-review-btn">
                         <button type="button" class="btn btn-outline-secondary" th:onclick="'location.href=\''+@{/reviews/update/}+@{${orderItem.orderItemId}}+'\''">리뷰 수정</button>
                         <button type="button" class="btn btn-outline-secondary" th:onclick="'location.href=\''+@{/reviews/delete/}+@{${orderItem.orderItemId}}+'\''">리뷰 삭제</button>
                     </div>

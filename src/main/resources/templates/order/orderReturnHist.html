@@ -157,97 +157,101 @@
 </th:block>
 
 <div layout:fragment="content" class="content-mg">
-    <h2 class="mb-4">
-        반품 관리
-    </h2>
+    <div class="admin">
+        <h2 class="mb-4">
+            반품 관리
+        </h2>
 
-    <div class="orderButtonBox">
-        <ul class="btnBox">
-            <li>
-                <button type="button" id="confirmBtn" class="btn">확인</button>
-            </li>
-        </ul>
-    </div>
+        <div class="admin-tool">
+            <div class="orderButtonBox">
+                <ul class="btnBox">
+                    <li>
+                        <button type="button" id="confirmBtn" class="btn btn-primary">선택한 반품 확인</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-    <div class="orderBox">
-        <div class="orderTable">
-            <table id="returnTable" class="table">
-                <thead>
-                    <th><input type="checkbox" id="selAll" name="selAll"/></th>
-                    <th>주문자</th>
-                    <th>상품명/요청일</th>
-                    <th>사유</th>
-                    <th>상품금액</th>
-                    <th>수량</th>
-                    <th>환불 배송비</th>
-                    <th>환불예정금액</th>
-                    <th>반품처리 상태</th>
-                </thead>
+        <div class="orderBox">
+            <div class="orderTable">
+                <table id="returnTable" class="table">
+                    <thead>
+                        <th><input type="checkbox" id="selAll" name="selAll"/></th>
+                        <th>주문자</th>
+                        <th>상품명/요청일</th>
+                        <th>사유</th>
+                        <th>상품금액</th>
+                        <th>수량</th>
+                        <th>환불 배송비</th>
+                        <th>환불예정금액</th>
+                        <th>반품처리 상태</th>
+                    </thead>
 
-                <tbody>
-                <th:block th:each="orderItem: ${returns.getContent()}">
-                    <th:block th:each="item: ${orderItem.getOrderItemDtoList()}">
-                        <tr>
-                            <!--2개이상 장바구니 구매 대응-->
-                            <th:block th:if="${(item.returnStatus == T(com.shop.constant.ReturnStatus).N )}">
-                                <td th:if="${itemStat.index == 0 and orderItem.getOrderItemDtoList().size() > 1}"
-                                    th:rowspan="${orderItem.getOrderItemDtoList().size()}">
-                                    <input type="checkbox" th:name="${'groupChk-' + orderItem.orderId}"
-                                           th:value="${orderItem.orderId}"/>
+                    <tbody>
+                    <th:block th:each="orderItem: ${returns.getContent()}">
+                        <th:block th:each="item: ${orderItem.getOrderItemDtoList()}">
+                            <tr>
+                                <!--2개이상 장바구니 구매 대응-->
+                                <th:block th:if="${(item.returnStatus == T(com.shop.constant.ReturnStatus).N )}">
+                                    <td th:if="${itemStat.index == 0 and orderItem.getOrderItemDtoList().size() > 1}"
+                                        th:rowspan="${orderItem.getOrderItemDtoList().size()}">
+                                        <input type="checkbox" th:name="${'groupChk-' + orderItem.orderId}"
+                                               th:value="${orderItem.orderId}"/>
+                                    </td>
+                                    <td th:if="${itemStat.index == 0 and orderItem.getOrderItemDtoList().size() == 1}">
+                                        <input type="checkbox" th:name="${'groupChk-' + orderItem.orderId}"
+                                               th:value="${orderItem.orderId}"/>
+                                    </td>
+                                </th:block>
+                                <th:block th:if="${(item.returnStatus == T(com.shop.constant.ReturnStatus).Y )}">
+                                    <td></td>
+                                </th:block>
+
+                                <td th:text="${orderItem.orderId}"></td>
+                                <td th:text="${item.itemNm }"></td>
+                                <td>문제가 많아요.</td>
+                                <td th:text="${item.returnPrice }"></td>
+                                <td th:text="${item.returnCount }"></td>
+                                <td th:text="5000"></td>
+                                <td th:text="${(item.returnPrice * item.returnCount) - 5000}"></td>
+
+                                <td th:if="${(item.returnStatus == T(com.shop.constant.ReturnStatus).Y )}">반품 처리 완료
                                 </td>
-                                <td th:if="${itemStat.index == 0 and orderItem.getOrderItemDtoList().size() == 1}">
-                                    <input type="checkbox" th:name="${'groupChk-' + orderItem.orderId}"
-                                           th:value="${orderItem.orderId}"/>
+                                <td th:if="${(item.returnStatus == T(com.shop.constant.ReturnStatus).N )}">반품 처리 대기
                                 </td>
-                            </th:block>
-                            <th:block th:if="${(item.returnStatus == T(com.shop.constant.ReturnStatus).Y )}">
-                                <td></td>
-                            </th:block>
-
-                            <td th:text="${orderItem.orderId}"></td>
-                            <td th:text="${item.itemNm }"></td>
-                            <td>문제가 많아요.</td>
-                            <td th:text="${item.returnPrice }"></td>
-                            <td th:text="${item.returnCount }"></td>
-                            <td th:text="5000"></td>
-                            <td th:text="${(item.returnPrice * item.returnCount) - 5000}"></td>
-
-                            <td th:if="${(item.returnStatus == T(com.shop.constant.ReturnStatus).Y )}">반품 처리 완료
-                            </td>
-                            <td th:if="${(item.returnStatus == T(com.shop.constant.ReturnStatus).N )}">반품 처리 대기
-                            </td>
-                        </tr>
+                            </tr>
+                        </th:block>
                     </th:block>
-                </th:block>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="pageBox"
+             th:with="start=${(returns.number/maxPage)*maxPage + 1}, end=(${(returns.totalPages == 0) ? 1 : (start + (maxPage - 1) < returns.totalPages ? start + (maxPage - 1) : returns.totalPages)})">
+            <ul class="pagination justify-content-center">
+
+                <li class="page-item" th:classappend="${returns.number eq 0}?'disabled':''">
+                    <a th:href="@{'/returns/' + ${returns.number-1}}" aria-label='Previous' class="page-link">
+                        <span aria-hidden='true'>이전</span>
+                    </a>
+                </li>
+
+                <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}"
+                    th:classappend="${returns.number eq page-1}?'active':''">
+                    <a th:href="@{'/returns/' + ${page-1}}" th:inline="text" class="page-link">[[${page}]]</a>
+                </li>
+
+                <li class="page-item" th:classappend="${returns.number+1 ge returns.totalPages}?'disabled':''">
+                    <a th:href="@{'/returns/' + ${returns.number+1}}" aria-label='Next' class="page-link">
+                        <span aria-hidden='true'>다음</span>
+                    </a>
+                </li>
+
+            </ul>
         </div>
     </div>
-
-    <div class="pageBox"
-         th:with="start=${(returns.number/maxPage)*maxPage + 1}, end=(${(returns.totalPages == 0) ? 1 : (start + (maxPage - 1) < returns.totalPages ? start + (maxPage - 1) : returns.totalPages)})">
-        <ul class="pagination justify-content-center">
-
-            <li class="page-item" th:classappend="${returns.number eq 0}?'disabled':''">
-                <a th:href="@{'/returns/' + ${returns.number-1}}" aria-label='Previous' class="page-link">
-                    <span aria-hidden='true'>이전</span>
-                </a>
-            </li>
-
-            <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}"
-                th:classappend="${returns.number eq page-1}?'active':''">
-                <a th:href="@{'/returns/' + ${page-1}}" th:inline="text" class="page-link">[[${page}]]</a>
-            </li>
-
-            <li class="page-item" th:classappend="${returns.number+1 ge returns.totalPages}?'disabled':''">
-                <a th:href="@{'/returns/' + ${returns.number+1}}" aria-label='Next' class="page-link">
-                    <span aria-hidden='true'>다음</span>
-                </a>
-            </li>
-
-        </ul>
-    </div>
-
 </div>
+
 
 </html>

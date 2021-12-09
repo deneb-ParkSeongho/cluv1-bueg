@@ -55,16 +55,16 @@
                     <option value="">전체</option>
                     <option th:each="category : ${categoryList}" th:value="${category.getCateCode()}" th:text="${category.getCateName()}"></option>
                 </select>
-                <b style="margin: 0 5px 0 0;">태그 : </b>
-                <span th:each="tag : ${tagList}">
-                    <input type="checkbox" th:field="*{searchTagIds}" th:value="${tag.getId()}">
+                <b style="margin: 0 5px 0 20px;">태그 : </b>
+                <span th:each="tag : ${tagList}" style="display: flex; margin-left: 5px">
+                    <input type="checkbox" th:field="*{searchTagIds}" th:value="${tag.getId()}" style="margin-right: 2px">
                     <label th:for="${#ids.prev('searchTagIds')}" th:text="${tag.getTagNm()}" class="form-check-label"></label>
                 </span>
-                <input th:field="*{searchQuery}" type="text" class="form-control" placeholder="상품명을 입력해주세요">
+                <input th:field="*{searchQuery}" type="text" class="form-control" placeholder="상품명을 입력해주세요" style="margin-left: 20px">
                 <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
             </div>
         </form>
-        <div class="row">
+        <div class="row" style="margin-top: 40px;">
             <th:block th:each="item, status: ${items.getContent()}">
                 <div class="col-md-4 margin">
                     <div class="card">

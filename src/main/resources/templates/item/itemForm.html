@@ -134,18 +134,6 @@
     <div layout:fragment="content">
         <!-- 파일을 업로드할 때는 인코딩 타입을 `enctype="multipart/form-data"` 같이 설정하고 사용해야 함 -->
         <form role="form" method="post" enctype="multipart/form-data" th:object="${itemFormDto}">
-        <!--상품 최저가 표시할 모달창-->
-            <div id="modal" class="modal" data-backdrop="static">
-                <div class="modal_body">등록할 상품의 네이버 최저가
-                    <div style="text-align:right">
-                        <button id="close" type="button" class="btn btn-primary" onclick="mdclose()">닫기</button>
-                    </div>
-                    <div>
-                        <table id ="cateList" border = "1">
-                        </table>
-                    </div>
-                </div>
-            </div>
             <p class="h2" th:if="${#strings.isEmpty(itemFormDto.id)}">상품 등록</p>
             <p class="h2" th:unless="${#strings.isEmpty(itemFormDto.id)}">상품 수정</p>
             <!-- 상품 수정할 때 사용할 식별자 -->

@@ -16,6 +16,12 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 리뷰 서비스
+ * @author 강은별
+ * @version 1.0
+ */
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -25,6 +31,14 @@ public class ReviewService {
     private final ReviewImgService reviewImgService;
     private final ReviewImgRepository reviewImgRepository;
 
+    /**
+     *
+     * @param orderItemId 주문번호가 담겨있는 파라미터
+     * @param reviewFormDto 상품 리뷰 정보를 담을 객체
+     * @param reviewImgFile 상품 리뷰 이미지 정보를 담을 객체
+     * @return 리뷰를 작성한 주문번호 반환
+     * @throws Exception 이미지 업로드를 하는 중 Multipartfile 인자에  null이 입력되는 경우
+     */
     public Long saveReview(Long orderItemId, ReviewFormDto reviewFormDto, List<MultipartFile> reviewImgFile) throws Exception {
         OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(EntityNotFoundException::new);
         orderItem.createReview(reviewFormDto);
@@ -40,6 +54,11 @@ public class ReviewService {
         return orderItem.getId();
     }
 
+    /**
+     *
+     * @param orderItemId 상품 리뷰를 불러오기 위한 주문 번호
+     * @return 리뷰 정보가 담겨있는 객체 반환
+     */
     @Transactional(readOnly = true)
     public ReviewFormDto getReviewDtl(Long orderItemId) {
         List<ReviewImg> reviewImgList = reviewImgRepository.findByOrderItemIdOrderByIdAsc(orderItemId);
@@ -58,6 +77,14 @@ public class ReviewService {
         return reviewFormDto;
     }
 
+    /**
+     *
+     * @param orderItemId 수정할 리뷰의 주문번호를 담고있는 파라미터
+     * @param reviewFormDto 수정할 리뷰 정보를 담고있는 객체
+     * @param reviewImgFile 수정할 리뷰 이미지 정보를 담고있는 객체
+     * @return 수정할 리뷰의 주문번호를 반환
+     * @throws Exception 이미지 업로드를 하는 중 Multipartfile 인자에  null이 입력되는 경우
+     */
     public Long updateReview(Long orderItemId, ReviewFormDto reviewFormDto, List<MultipartFile> reviewImgFile) throws Exception {
         OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(EntityNotFoundException::new);
         orderItem.updateReview(reviewFormDto);
@@ -72,6 +99,12 @@ public class ReviewService {
 
     }
 
+    /**
+     *
+     * @param orderItemId 삭제할 리뷰의 주문번호를 담고있는 파라미터
+     * @param reviewFormDto 삭제할 리뷰 정보를 담고있는 객체
+     * @return 삭제할 리뷰의 주문번호를 반환
+     */
     public Long deleteReview(Long orderItemId, ReviewFormDto reviewFormDto) {
         OrderItem orderItem = orderItemRepository.findById(orderItemId).orElseThrow(EntityNotFoundException::new);
         orderItem.deleteReview(reviewFormDto);
@@ -80,6 +113,11 @@ public class ReviewService {
         return orderItem.getId();
     }
 
+    /**
+     *
+     * @param itemId 제품 별로 상세내역에 리뷰를 보여주기 위한 제품 번호
+     * @return 제품의 리뷰 정보가 담겨있는 list 반환
+     */
     @Transactional(readOnly = true)
     public List<ReviewItemDto> getReviewItem(Long itemId) {
         List<OrderItem> orderItems = orderItemRepository.findByItemIdAndReviewYn(itemId, "Y");
@@ -95,6 +133,11 @@ public class ReviewService {
         return reviewItemDtoList;
     }
 
+    /**
+     *
+     * @param itemId 제품 별로 상세내역에 리뷰 이미지를 보여주기 위한 제품 번호
+     * @return 제품의 리뷰 이미지 정보가 담겨있는 list 반환
+     */
     @Transactional(readOnly = true)
     public List<ReviewImgDto> getReviewItemImg(Long itemId) {
         List<OrderItem> orderItems = orderItemRepository.findByItemIdAndReviewYn(itemId, "Y");
