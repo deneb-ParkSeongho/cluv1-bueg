@@ -7,6 +7,9 @@ import com.shop.dto.UsedItemSearchDto;
 import com.shop.service.NaverShopService;
 import com.shop.service.UsedItemService;
 import groovy.util.logging.Slf4j;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -145,6 +148,17 @@ public class UsedItemController {
         return "usedItem/usedItemDtl";
     }
 
+    /**
+     * 장바구니 상품 추가 메소드
+     *
+     * @param name 검색할 상품명을 담은 객체
+     *
+     * @return naverShopItemDtoList 네이버 쇼핑 API에서 반환한 값 중 상품명, 최저가 , 상품구매링크 담아 리스트 반환
+     */
+    @Operation(summary = "네이버 쇼핑 시세 조회 ", description = "네이버 쇼핑 시세 조회 ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "네이버 쇼핑 시세 조회")
+    })
     @GetMapping(value = "/uitem/naverShopItems")
     public @ResponseBody List<NaverShopItemDto> getMarketItems(@RequestParam("name") String name) {
         return naverShopService.search(name);
