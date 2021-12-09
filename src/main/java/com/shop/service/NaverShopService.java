@@ -17,6 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 네이버 쇼핑 API 서비스
+ *
+ * @author Kuhn
+ * @version 1.0
+ */
 @Slf4j
 @Service
 public class NaverShopService {
@@ -26,6 +32,14 @@ public class NaverShopService {
 
     @Value("${shop.naver.client.secret}")
     private String clientSecret;
+
+    /**
+     * 장바구니 상품 추가 메소드
+     *
+     * @param name 검색할 상품명을 담은 객체
+     *
+     * @return naverShopItemDtoList 네이버 쇼핑 API에서 반환한 값 중 상품명, 최저가 , 상품구매링크 담아 리스트 반환
+     */
 
     public List<NaverShopItemDto> search(String name) {
         RestTemplate rest = new RestTemplate();
@@ -64,3 +78,5 @@ public class NaverShopService {
 
 
 }
+
+
