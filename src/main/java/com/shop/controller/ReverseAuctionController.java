@@ -5,6 +5,11 @@ import com.shop.entity.ReverseAuction;
 import com.shop.repository.ReverseAuctionRepository;
 import com.shop.service.ItemService;
 import com.shop.service.ReverseAuctionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +26,13 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 역경매 컨트롤러
+ *
+ * @author 유한종
+ * @version 1.0
+ */
+@Tag(name = "역경매 컨트롤러", description = "역경매 요청 처리 컨트롤러")
 @Controller
 @RequiredArgsConstructor
 public class ReverseAuctionController {
@@ -31,8 +43,23 @@ public class ReverseAuctionController {
 
     private final ReverseAuctionRepository reverseAuctionRepository;
 
+    /**
+     * 역경매 목록 조회 페이지
+     *
+     * @param reverseAuctionSearchDto 검색 필드 정보
+     * @param page 페이징 번호
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 역경매 목록 조회 뷰 경로
+     */
+    @Operation(summary = "역경매 목록 조회 페이지", description = "역경매 목록 조회 페이지 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "역경매 목록 조회 뷰 경로")
+    })
     @GetMapping(value = {"/rauctions", "/rauctions/{page}"})
-    public String reverseAuctionList(ReverseAuctionSearchDto reverseAuctionSearchDto, @PathVariable("page") Optional<Integer> page, Model model) {
+    public String reverseAuctionList(@Parameter(description = "검색 필드 정보") ReverseAuctionSearchDto reverseAuctionSearchDto,
+                                     @Parameter(description = "페이징 번호") @PathVariable("page") Optional<Integer> page,
+                                     @Parameter(description = "뷰에 전달할 모델 객체") Model model) {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
         Page<ReverseAuctionDto> reverseAuctionDtoList = reverseAuctionService.getUserReverseAuctionPage(reverseAuctionSearchDto, pageable);
         List<ReverseAuctionHistoryDto> previousReverseAuctionDtoList = reverseAuctionService.getPreviousReverseAuctionPage();
@@ -45,6 +72,14 @@ public class ReverseAuctionController {
         return "reverseAuction/reverseAuctionList";
     }
 
+    /**
+     * 역경매 상세 정보 조회 페이지
+     *
+     * @param reverseAuctionId 역경매 ID
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 역경매 상세 정보 조회 뷰 경로
+     */
     @GetMapping(value = "/rauction/{reverseAuctionId}")
     public String reverseAuctionDtl(@PathVariable("reverseAuctionId") Long reverseAuctionId, Model model) {
         ReverseAuctionDto reverseAuctionDto = reverseAuctionService.getReverseAuctionDtl(reverseAuctionId);
@@ -58,7 +93,16 @@ public class ReverseAuctionController {
 
         return "reverseAuction/reverseAuctionDtl";
     }
-
+    
+    /**
+     * 관리자 역경매 목록 조회 페이지
+     *
+     * @param reverseAuctionSearchDto 검색 필드 정보
+     * @param page 페이징 번호
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 관리자 역경매 목록 조회 페이지 뷰 경로
+     */
     @GetMapping(value = {"/admin/rauctions", "/admin/rauctions/{page}"})
     public String reverseAuctionManage(ReverseAuctionSearchDto reverseAuctionSearchDto, @PathVariable("page") Optional<Integer> page, Model model) {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 5);
@@ -71,6 +115,13 @@ public class ReverseAuctionController {
         return "reverseAuction/reverseAuctionMng";
     }
 
+    /**
+     * 관리자 역경매 등록 페이지
+     *
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 관리자 역경매 등록 페이지 뷰 경로
+     */
     @GetMapping(value = "/admin/rauction/new")
     public String reverseAuctionForm(Model model) {
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
@@ -84,6 +135,16 @@ public class ReverseAuctionController {
         return "reverseAuction/reverseAuctionForm";
     }
 
+    /**
+     * 관리자 역경매 등록 처리
+     *
+     * @param reverseAuctionFormDto 사용자 입력 역경매 정보 객체
+     * @param bindingResult 사용자 입력값 오류 정보 객체
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 성공: 관리자 역경매 목록 조회 페이지 뷰 경로
+     *         실패: 관리자 역경매 등록 페이지 뷰 경로
+     */
     @PostMapping(value = "/admin/rauction/new")
     public String reverseAuctionNew(@Valid ReverseAuctionFormDto reverseAuctionFormDto, BindingResult bindingResult, Model model) {
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
@@ -109,6 +170,14 @@ public class ReverseAuctionController {
         return "redirect:/admin/rauctions";
     }
 
+    /**
+     * 관리자 역경매 수정 페이지
+     *
+     * @param reverseAuctionId 역경매 ID
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 관리자 역경매 수정 페이지 뷰 경로
+     */
     @GetMapping(value = "/admin/rauction/{reverseAuctionId}")
     public String reverseAuctionForm(@PathVariable("reverseAuctionId") Long reverseAuctionId, Model model) {
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
@@ -132,6 +201,16 @@ public class ReverseAuctionController {
         return "reverseAuction/reverseAuctionForm";
     }
 
+    /**
+     * 관리자 역경매 수정 처리
+     *
+     * @param reverseAuctionFormDto 사용자 입력 역경매 정보 객체
+     * @param bindingResult 사용자 입력값 오류 정보 객체
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 성공: 관리자 역경매 목록 조회 페이지 뷰 경로
+     *         실패: 관리자 역경매 수정 페이지 뷰 경로
+     */
     @PostMapping(value = "/admin/rauction/{reverseAuctionId}")
     public String reverseAuctionUpdate(@Valid ReverseAuctionFormDto reverseAuctionFormDto, BindingResult bindingResult, Model model) {
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
@@ -157,6 +236,14 @@ public class ReverseAuctionController {
         return "redirect:/admin/rauctions";
     }
 
+    /**
+     * 관리자 역경매 삭제 처리
+     *
+     * @param reverseAuctionId 역경매 ID
+     * @param model 뷰에 전달할 모델 객체
+     *
+     * @return 관리자 역경매 목록 조회 페이지 뷰 경로
+     */
     @GetMapping(value = "/admin/rauction/{reverseAuctionId}/delete")
     public String reverseAuctionDelete(@PathVariable("reverseAuctionId") Long reverseAuctionId, Model model) {
         reverseAuctionService.deleteReverseAuction(reverseAuctionId);
