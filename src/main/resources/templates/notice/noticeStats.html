@@ -3,16 +3,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layoutGlobal}">
 
-<head>
-    <title>알림 전송량 통계 페이지</title>
-    <style>
-        h1 { text-align: center; }
-    </style>
-</head>
-
-<div layout:fragment="content" style="align-content: center">
-    <h1>알림 전송량 통계</h1>
-    <canvas id="canvas" width="500" height="200"></canvas>
+<div layout:fragment="content">
+    <div class="admin">
+        <h1>알림 전송량 통계</h1>
+        <canvas id="canvas" width="500" height="200"></canvas>
+    </div>
 </div>
 
 <th:block layout:fragment="script">

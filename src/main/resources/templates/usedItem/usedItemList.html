@@ -71,55 +71,59 @@
 </th:block>
 
 <div layout:fragment="content">
-    <h2>중고 상품 목록</h2>
-    <form th:action="@{'/uitems/' + ${usedItemList.number}}" role="form" method="get" th:object="${usedItemList}">
-        <div class="form-inline justify-content-center" th:object="${usedItemSearchDto}">
-            <input th:field="*{searchQuery}" type="text" class="form-control" placeholder="상품명을 입력해주세요">
-            <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
-        </div>
-        <a th:href="@{/uitem/new}" class="btn btn-primary">중고 상품 등록</a>
-        <a th:href="@{/uitem/manage}" class="btn btn-info">등록한 중고 상품</a>
-    </form>
-    <!-- 상품 관리와 동일한 상품 조회 결과 출력 -->
-    <form th:action="@{'/uitems/' + ${usedItemList.number}}" role="form" method="get" th:object="${usedItemList}">
-        <div class="row">
-            <th:block th:each="usedItem, status: ${usedItemList.getContent()}">
-                <div class="col-md-4 margin">
-                    <div class="card">
-                        <a th:href="'/uitem/' + ${usedItem.id}" class="text-dark">
-                            <img th:src="${usedItem.imgUrl}" class="card-img-top" th:alt="${usedItem.name}" height="400">
-                            <div class="card-body">
-                                <h4 class="card-title">[[${usedItem.name}]]</h4>
-                                <p class="card-text">[[${usedItem.detail}]]</p>
-                                <h3 class="card-title text-danger">[[${#numbers.formatCurrency(usedItem.price)}]]</h3>
-                            </div>
-                        </a>
-                    </div>
+    <div class="admin">
+        <h2>중고 상품 목록</h2>
+        <div class="admin-tool">
+            <form th:action="@{'/uitems/' + ${usedItemList.number}}" role="form" method="get" th:object="${usedItemList}">
+                <div class="form-inline justify-content-center" th:object="${usedItemSearchDto}" style="float: left">
+                    <input th:field="*{searchQuery}" type="text" class="form-control" placeholder="상품명을 입력해주세요">
+                    <button id="searchBtn" type="submit" class="btn btn-primary">검색</button>
                 </div>
-            </th:block>
+                <a th:href="@{/uitem/manage}" class="btn btn-info" style="float: right; margin-left: 3px">등록한 중고 상품</a>
+                <a th:href="@{/uitem/new}" class="btn btn-primary" style="float: right; margin-left: 20px">중고 상품 등록</a>
+            </form>
         </div>
-        <div th:if="${usedItemList.getTotalElements() == 0}" class="table-empty">
-            <i class="fa fa-times-circle"></i>
-            검색 결과가 없습니다
-        </div>
-        <div th:with="start=${(usedItemList.number/maxPage) * maxPage + 1}, end=(${(usedItemList.totalPages == 0) ? 1 : (start + (maxPage - 1) < usedItemList.totalPages ? start + (maxPage - 1) : usedItemList.totalPages)})" >
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${usedItemList.first}?'disabled'">
-                    <a th:onclick="'javascript:page(' + ${usedItemList.number - 1} + ')'" aria-label='Previous' class="page-link">
-                        <span aria-hidden='true'>이전</span>
-                    </a>
-                </li>
-                <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${usedItemList.number eq page-1}?'active':''">
-                    <a th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
-                </li>
-                <li class="page-item" th:classappend="${usedItemList.last}?'disabled'">
-                    <a th:onclick="'javascript:page(' + ${usedItemList.number + 1} + ')'" aria-label='Next' class="page-link">
-                        <span aria-hidden='true'>다음</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </form>
+        <!-- 상품 관리와 동일한 상품 조회 결과 출력 -->
+        <form th:action="@{'/uitems/' + ${usedItemList.number}}" role="form" method="get" th:object="${usedItemList}">
+            <div class="row">
+                <th:block th:each="usedItem, status: ${usedItemList.getContent()}">
+                    <div class="col-md-4 margin">
+                        <div class="card">
+                            <a th:href="'/uitem/' + ${usedItem.id}" class="text-dark">
+                                <img th:src="${usedItem.imgUrl}" class="card-img-top" th:alt="${usedItem.name}" height="400">
+                                <div class="card-body">
+                                    <h4 class="card-title">[[${usedItem.name}]]</h4>
+                                    <p class="card-text">[[${usedItem.detail}]]</p>
+                                    <h3 class="card-title text-danger">[[${#numbers.formatCurrency(usedItem.price)}]]</h3>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+            <div th:if="${usedItemList.getTotalElements() == 0}" class="table-empty">
+                <i class="fa fa-times-circle"></i>
+                검색 결과가 없습니다
+            </div>
+            <div th:with="start=${(usedItemList.number/maxPage) * maxPage + 1}, end=(${(usedItemList.totalPages == 0) ? 1 : (start + (maxPage - 1) < usedItemList.totalPages ? start + (maxPage - 1) : usedItemList.totalPages)})" >
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${usedItemList.first}?'disabled'">
+                        <a th:onclick="'javascript:page(' + ${usedItemList.number - 1} + ')'" aria-label='Previous' class="page-link">
+                            <span aria-hidden='true'>이전</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${usedItemList.number eq page-1}?'active':''">
+                        <a th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
+                    </li>
+                    <li class="page-item" th:classappend="${usedItemList.last}?'disabled'">
+                        <a th:onclick="'javascript:page(' + ${usedItemList.number + 1} + ')'" aria-label='Next' class="page-link">
+                            <span aria-hidden='true'>다음</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </form>
+    </div>
 </div>
 
 </html>

@@ -38,7 +38,8 @@
 
 <div layout:fragment="content">
 
-    <form th:action="@{'/members/admin/memberMng/' + ${members.number}}" role="form" method="get" th:object="${members}">
+    <form th:action="@{'/members/admin/memberMng/' + ${members.number}}" role="form" method="get" th:object="${members}" class="admin">
+        <h2>회원 관리</h2>
         <table class="table">
             <thead>
             <tr>
@@ -62,23 +63,19 @@
 
         <div th:with="start=${(members.number/maxPage)*maxPage + 1}, end=(${(members.totalPages == 0) ? 1 : (start + (maxPage - 1) < members.totalPages ? start + (maxPage - 1) : members.totalPages)})" >
             <ul class="pagination justify-content-center">
-
                 <li class="page-item" th:classappend="${members.first}?'disabled'">
                     <a th:onclick="'javascript:page(' + ${members.number - 1} + ')'" aria-label='Previous' class="page-link">
                         <span aria-hidden='true'>이전</span>
                     </a>
                 </li>
-
                 <li class="page-item" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${members.number eq page-1}?'active':''">
-                    <a th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link" style="background-color: black; border-color: black">[[${page}]]</a>
+                    <a th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
                 </li>
-
                 <li class="page-item" th:classappend="${members.last}?'disabled'">
                     <a th:onclick="'javascript:page(' + ${members.number + 1} + ')'" aria-label='Next' class="page-link">
                         <span aria-hidden='true'>다음</span>
                     </a>
                 </li>
-
             </ul>
         </div>
 
@@ -88,7 +85,7 @@
                 <option value="email">이메일</option>
             </select>
             <input th:field="*{searchQuery}" type="text" class="form-control" placeholder="검색어를 입력해주세요">
-            <button id="searchBtn" type="submit" class="btn btn-primary" style="background-color: black; border-color: black">검색</button>
+            <button id="searchBtn" type="submit" class="btn btn-primary ml-2">검색</button>
         </div>
     </form>
 

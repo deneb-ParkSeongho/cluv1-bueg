@@ -61,7 +61,7 @@
     </th:block>
 
     <div layout:fragment="content">
-        <h2>역경매 결제 관리</h2>
+        <h2 class="mb-4">역경매 결제 관리</h2>
         <form th:action="@{'/admin/bids/' + ${bidDtoList.number}}" method="GET" th:object="${bidDtoList}">
             <table class="rauction-table table">
                 <thead>

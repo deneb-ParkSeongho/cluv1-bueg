@@ -23,6 +23,7 @@ public class BestItemController {
     public String getBestItemByDays(Model model) {
         List<BestItemDto> items = bestItemService.getBestOfDayItem();
 
+        model.addAttribute("title", "일간");
         model.addAttribute("items", items);
 
         return "item/bestItem";
@@ -32,6 +33,7 @@ public class BestItemController {
     public String getBestItemByWeek(Model model){
         List<BestItemDto> items = bestItemService.getBestOfWeekItem();
 
+        model.addAttribute("title", "주간");
         model.addAttribute("items", items);
 
         return "item/bestItem";
@@ -41,6 +43,7 @@ public class BestItemController {
     public String getBestItemByMonth(Model model){
         List<BestItemDto> items = bestItemService.getBestOfMonthItem();
 
+        model.addAttribute("title", "월간");
         model.addAttribute("items", items);
 
         return "item/bestItem";

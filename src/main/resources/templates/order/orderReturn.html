@@ -199,14 +199,8 @@
             </table>
         </div>
         <div class="orderButtonBox">
-            <ul class="btnBox">
-                <li>
-                    <button type="button" id="cancelBtn" class="btn">취소</button>
-                </li>
-                <li>
-                    <button type="button" id="confirmBtn" class="btn" th:data-order="${order.id}">확인</button>
-                </li>
-            </ul>
+            <button type="button" id="cancelBtn" class="btn btn-secondary">취소</button>
+            <button type="button" id="confirmBtn" class="btn btn-primary" th:data-order="${order.id}">확인</button>
         </div>
     </div>
 </div>
