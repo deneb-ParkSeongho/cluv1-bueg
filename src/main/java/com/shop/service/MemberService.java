@@ -16,6 +16,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 회원 서비스
+ *
+ * @author 공통
+ * @version 1.0
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -24,12 +30,26 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final OAuth2MemberRepository oAuth2MemberRepository;
 
+    /**
+     *  신규 회원을 저장
+     *
+     * @param member 회원의 정보를 담고 있는 객체
+     *
+     * @return  memberRepository.save(member) 회원을 저장하는 메소드 반환
+     */
     public Member saveMember(Member member) {
         validateDuplicateMember(member);
 
         return memberRepository.save(member);
     }
 
+    /**
+     *  기존 회원 여부를 판단
+     *
+     * @param member 회원의 정보를 담고 있는 객체
+     *
+     * @throws IllegalStateException 소셜계정회원과 일반기존회원에게 알림 문구 전송
+     */
     private void validateDuplicateMember(Member member) {
         Member findMember = memberRepository.findByEmail(member.getEmail());
 
@@ -44,6 +64,13 @@ public class MemberService implements UserDetailsService {
         }
     }
 
+    /**
+     *  로그인한 회원 이름 호출
+     *
+     * @auther oLO
+     * @param email 현재 로그인한 계정의 이메일
+     * @return
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(email);
