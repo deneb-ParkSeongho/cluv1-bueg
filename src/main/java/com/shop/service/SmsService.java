@@ -8,6 +8,7 @@ import com.shop.entity.SmsNotice;
 import com.shop.repository.ItemRepository;
 import com.shop.repository.OrderRepository;
 import com.shop.repository.SmsNoticeRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
@@ -21,6 +22,12 @@ import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * SMS 알림 서비스
+ *
+ * @author 조우진
+ * @version 1.0
+ */
 @Service
 @RequiredArgsConstructor
 public class SmsService {
@@ -37,6 +44,14 @@ public class SmsService {
     @Value("${spring.sms.api-secret}")
     private String smsApiSecret;
 
+    /**
+     * SMS 전송 메소드
+     *
+     * @param phone 회원 휴대폰 번호
+     * @param text SMS 내용
+     *
+     * @return SMS 전송
+     */
     @Async
     public void sendSms(String phone, String text) {
         Message coolsms = new Message(smsApiKey, smsApiSecret);
@@ -55,6 +70,14 @@ public class SmsService {
         }
     }
 
+    /**
+     * 주문 알림 SMS 전송 메소드
+     *
+     * @param phone 회원 휴대폰 번호
+     * @param orderDto 주문 정보가 들어있는 객체
+     *
+     * @return SMS 전송, SMS 전송량 카운트
+     */
     public void sendOrderSms(String phone, OrderDto orderDto) {
         Item item = itemRepository.findById(orderDto.getItemId()).orElseThrow(EntityNotFoundException::new);
 
@@ -71,6 +94,15 @@ public class SmsService {
         this.addSmsCount();
     }
 
+    /**
+     * 장바구니 주문 알림 SMS 전송 메소드
+     *
+     * @param phone 회원 휴대폰 번호
+     * @param orderDtoList 장바구니 주문 정보가 들어있는 리스트 객체
+     * @param totalPrice 장바구니 주문 총 가격
+     *
+     * @return SMS 전송, SMS 전송량 카운트
+     */
     public void sendCartOrderSms(String phone, List<OrderDto> orderDtoList, Integer totalPrice) {
         StringBuffer sb = new StringBuffer("[Bueg]주문상품 내역\n");
 
@@ -93,6 +125,11 @@ public class SmsService {
         this.addSmsCount();
     }
 
+    /**
+     * SMS 알림 전송량 카운트 메소드
+     *
+     * @return SMS 알림 전송량 카운트 저장
+     */
     public void addSmsCount() {
         SmsNotice smsNotice = new SmsNotice();
 
