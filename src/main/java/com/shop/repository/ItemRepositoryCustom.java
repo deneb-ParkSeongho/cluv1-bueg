@@ -31,10 +31,25 @@ public interface ItemRepositoryCustom {
 
     Page<GiftMainItemDto> getGiftItemPage(ItemSearchDto itemSearchDto, Pageable pageable, Long cateCode);
 
+    /**
+     * 일별 베스트 상품 조회 메소드
+     *
+     * @return List<BestItemDto> 조회된 일별 베스트 상품 리스트 반환
+     */
     List<BestItemDto> getBestOfDayItem();
 
+    /**
+     * 주별 베스트 상품 조회 메소드
+     *
+     * @return List<BestItemDto> 조회된 주별 베스트 상품 리스트 반환
+     */
     List<BestItemDto> getBestOfWeekItem();
 
+    /**
+     * 월별 베스트 상품 조회 메소드
+     *
+     * @return List<BestItemDto> 조회된 월별 베스트 상품 리스트 반환
+     */
     List<BestItemDto> getBestOfMonthItem();
 
     Page<MainItemDto> getDetailSearchPage(String[] filters, ItemSearchDto itemSearchDto, Pageable pageable);

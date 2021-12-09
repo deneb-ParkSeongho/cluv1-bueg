@@ -279,6 +279,13 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    /**
+     * 베스트 상품 조회 메소드
+     *
+     * @param d 베스트 상품을 조회할 날짜수
+     *
+     * @return content 조회된 베스트 상품 리스트 반환
+     */
     private List<BestItemDto> getBestItem(Integer d) {
         QItem item = QItem.item;
         QOrderItem orderItem = QOrderItem.orderItem;
@@ -311,16 +318,31 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return content;
     }
 
+    /**
+     * 일별 베스트 상품 조회 메소드
+     *
+     * @return this.getBestItem(1) 조회된 일별 베스트 상품 리스트 반환
+     */
     @Override
     public List<BestItemDto> getBestOfDayItem() {
         return this.getBestItem(1);
     }
 
+    /**
+     * 주별 베스트 상품 조회 메소드
+     *
+     * @return this.getBestItem(1) 조회된 일별 베스트 상품 리스트 반환
+     */
     @Override
     public List<BestItemDto> getBestOfWeekItem() {
         return this.getBestItem(7);
     }
 
+    /**
+     * 월별 베스트 상품 조회 메소드
+     *
+     * @return this.getBestItem(1) 조회된 일별 베스트 상품 리스트 반환
+     */
     @Override
     public List<BestItemDto> getBestOfMonthItem() {
         return this.getBestItem(30);
