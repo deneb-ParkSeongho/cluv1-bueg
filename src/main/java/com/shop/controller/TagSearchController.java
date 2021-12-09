@@ -19,6 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
+/**
+ * 태그 검색 컨트롤러
+ *
+ * @author Eloy
+ * @version 1.0
+ */
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -27,6 +33,14 @@ public class TagSearchController {
     private final ItemService itemService;
     private final TagService tagService;
 
+    /**
+     *  태그 검색 메소드
+     *
+     * @param itemSearchDto 상품 검색조건을 담는 객체
+     * @param model 필터링될 검색 조건과 상품의 정보를 넘겨주는 객체
+     * @param filter 필터링될 태그를 담는 객체
+     * @return tagSearch/dtlSearch 태그검색페이지 반환
+     */
     @GetMapping(value = "/detailSearch")
     public String detailSearch(ItemSearchDto itemSearchDto, Optional<Integer> page, Model model, @RequestParam(value = "filter", required = false) String filter){
         String[] filters = new String[] {};
@@ -46,6 +60,12 @@ public class TagSearchController {
         return "tagSearch/dtlSearch";
     }
 
+    /**
+     *  태그별 주문량 확인 메소드
+     *
+     * @param model 태그의 이름과 누적주문량을 넘겨주는 객체
+     * @return tagSearch/showSellDemo 태그별 주문량 통계 확인 페이지 반환
+     */
     @GetMapping(value = "/admin/showTagSell")
     public String showTagSell(Model model) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
