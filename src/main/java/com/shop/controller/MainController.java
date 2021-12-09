@@ -15,6 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 메인 컨트롤러
+ *
+ * @author 공통
+ * @version 1.0
+ */
+
 @Controller
 @RequiredArgsConstructor
 public class MainController {
@@ -26,6 +33,15 @@ public class MainController {
     private final ReverseAuctionService reverseAuctionService;
 
     private final UsedItemService usedItemService;
+
+    /**
+     * 메인 페이지로 이동
+     *
+     * @param itemSearchDto 상품정보를 조회하는 객체
+     * @param model 상품정보, 상품정보조회, 최대 5페이지 정보를 담는 객체
+     *
+     * @return main 메인페이지로 반환
+     */
 
     @GetMapping(value = "/")
     public String main(Model model) {

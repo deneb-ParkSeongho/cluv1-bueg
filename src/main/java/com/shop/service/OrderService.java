@@ -22,6 +22,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 주문 서비스
+ *
+ * @author 문예은
+ * @version 1.0
+ */
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -145,6 +152,15 @@ public class OrderService {
         return this.getPaginatedOrderList(orders, pageable, totalCount);
     }
 
+    /**
+     * 반품 요청 목록값 메소드
+     *
+     * @param email 현재 로그인한 회원의 이메일
+     * @param pageable 페이징 조건에 맞춰 조회
+     *
+     * @return 주문정보 반환 , 페이징 조건에 맞춘 값을 반환, 반품 상품 수량 합계를 반환
+     */
+
     @Transactional(readOnly = true)
     public Page<OrderHistDto> getReturnList(String email, Pageable pageable) {
         List<Order> orders = orderRepository.findOrdersForReturnList(email, pageable);
@@ -190,6 +206,13 @@ public class OrderService {
         order.cancelOrder();
     }
 
+    /**
+     * 반품 요청 메소드
+     *
+     * @param order 반품등록일, 반품가격, 반품수량, 반품상태(N :대기중) 값
+     *
+     */
+
     public void requestReturn(Order order) {
         List<OrderItem> orderItemList = order.getOrderItems();
 
@@ -208,6 +231,13 @@ public class OrderService {
 
         orderRepository.save(order);
     }
+
+    /**
+     * 반품 확인 메소드
+     *
+     * @param orderId 반품등록일, 반품가격, 반품수량, 반품상태(Y : 완료) 값
+     *
+     */
 
     public void confirmReturn(Long orderId) {
         Order order = this.getOrder(orderId);
