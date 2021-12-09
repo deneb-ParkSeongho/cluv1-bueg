@@ -34,21 +34,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
 /**
  * 주문 컨트롤러
  *
- * @author 공통, 문예은
+ * @author 공통
  * @version 1.0
  */
-
-@Tag(name = "주문 컨트롤러", description = "주문 컨트롤러 목록")
-
-
+@Tag(name = "주문", description = "주문 관련 요청 처리")
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@Tag(name = "주문 컨트롤러", description = "주문 컨트롤러 목록")
 public class OrderController {
 
     private final OrderService orderService;
@@ -60,9 +55,13 @@ public class OrderController {
      * @param bindingResult 바인딩의 에러 결과
      * @param principal 현재 로그인한 회원
      *
-     * @retun HttpStatus.OK 요청이 성공했다는 http 응답 상태코드 반환
+     * @return 요청이 성공했다는 http 응답 상태코드 반환
      */
-
+    @Operation(summary = "주문 요청 처리", description = "주문 요청 처리 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주문 번호"),
+            @ApiResponse(responseCode = "400", description = "오류 메시지")
+    })
     @PostMapping(value = "/order")
     public @ResponseBody ResponseEntity order(@RequestBody @Valid OrderDto orderDto, BindingResult bindingResult, Principal principal) {
         if(bindingResult.hasErrors()) {
@@ -93,14 +92,17 @@ public class OrderController {
     }
 
     /**
-     * 주문 요청 처리 메소드
+     * 주문 이력 페이지
      *
      * @param model 주문이력 목록과 최대 5 페이지 정보를 담는 객체
      * @param principal 현재 로그인한 회원
      *
-     * @retun orderHist 주문이력페이지 반환
+     * @return 주문 이력 페이지 반환
      */
-
+    @Operation(summary = "주문 이력 페이지", description = "주문 이력 페이지 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주문 이력 페이지 뷰")
+    })
     @GetMapping(value = {"/orders", "/orders/{page}"})
     public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model) {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);
@@ -124,8 +126,10 @@ public class OrderController {
      *
      * @return "order/orderHist" 구매/선물 이력 페이지로 반환
      */
-
-    @Operation(summary = "구매/선물 이력 조회 메소드", description = "구매/선물 이력 조회")
+    @Operation(summary = "구매/선물 이력 조회 페이지", description = "구매/선물 이력 조회 페이지 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "구매/선물 이력 조회 페이지 뷰")
+    })
     @GetMapping(value = {"/ordersStatus/{status}", "/ordersStatus/{page}"})
     public String orderStatus(@PathVariable("page") Optional<Integer> page, @PathVariable(required = false, value = "status") GiftStatus giftStatus, Principal principal, Model model){
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);
@@ -144,9 +148,13 @@ public class OrderController {
      * @param orderId 주문 아이디
      * @param principal 현재 로그인한 회원
      *
-     * @retun HttpStatus.OK 요청이 성공했다는 http 응답 상태코드 반환
+     * @return HttpStatus.OK 요청이 성공했다는 http 응답 상태코드 반환
      */
-
+    @Operation(summary = "주문 취소 처리", description = "주문 취소 처리 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주문 번호"),
+            @ApiResponse(responseCode = "403", description = "'주문 취소 권한이 없습니다.' 문자열")
+    })
     @PostMapping("/order/{orderId}/cancel")
     public @ResponseBody ResponseEntity cancelOrder(@PathVariable("orderId") Long orderId, Principal principal) {
         if(!orderService.validateOrder(orderId, principal.getName())) {
@@ -166,12 +174,10 @@ public class OrderController {
      *
      * @return HttpStatus.OK 요청이 성공했다는 http 응답 상태코드 반환
      */
-
     @Operation(summary = "반품 요청 메소드", description = "반품 요청")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "반품 요청 처리"),
             @ApiResponse(responseCode = "403", description = "반품 요청 실패")})
-
     @PostMapping("/order/{orderId}/return")
     public @ResponseBody ResponseEntity returnOrderProc(@Parameter(description = "주문아이디")  @PathVariable("orderId") Long orderId, Principal principal) {
         if (!orderService.validateOrder(orderId, principal.getName())) {
@@ -194,7 +200,10 @@ public class OrderController {
      *
      * @return orderReturn 반품요청 페이지 반환
      */
-
+    @Operation(summary = "반품 요청 페이지", description = "반품 요청 페이지매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "반품 요청 페이지 뷰")
+    })
     @GetMapping("/order/{orderId}/return")
     public String returnOrder(@PathVariable("orderId") Long orderId, Principal principal, Model model) {
         if (!orderService.validateOrder(orderId, principal.getName())) {
@@ -215,11 +224,10 @@ public class OrderController {
      *
      * @return HttpStatus.OK 요청이 성공했다는 http 응답 상태코드 반환
      */
-
     @Operation(summary = "반품 요청 확인 메소드", description = "반품 요청 확인")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "반품 요청 확인 처리")})
-
+            @ApiResponse(responseCode = "200", description = "반품 요청 확인 처리")
+    })
     @PostMapping("/order/return/confirm")
     public @ResponseBody ResponseEntity returnOrderconfirm(@RequestBody Map<String, Object> paramMap) {
         List<String> orderIdList = (List<String>) paramMap.get("orderId");
@@ -239,7 +247,10 @@ public class OrderController {
      *
      * @return orderReturn 반품요청 페이지 반환
      */
-
+    @Operation(summary = "반품 관리 페이지", description = "반품 관리 페이지 매핑 메소드")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "반품 관리 페이지 뷰")
+    })
     @GetMapping(value = {"/returns", "/returns/{page}"})
     public String returnsHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model) {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);

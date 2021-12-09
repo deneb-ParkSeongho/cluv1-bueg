@@ -32,7 +32,7 @@ import java.util.Optional;
  * @author 유한종
  * @version 1.0
  */
-@Tag(name = "역경매", description = "역경매 요청 처리")
+@Tag(name = "역경매", description = "역경매 관련 요청 처리")
 @Controller
 @RequiredArgsConstructor
 public class ReverseAuctionController {

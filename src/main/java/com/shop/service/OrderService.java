@@ -253,7 +253,6 @@ public class OrderService {
      *  주문 취소 메소드
      *
      * @param orderId 주문 데이터 아이디
-     * @return order.cancelOrder() 주문취소 상태 변경 메소드 호출 반환
      */
     public void cancelOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);

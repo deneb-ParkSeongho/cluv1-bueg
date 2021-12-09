@@ -37,7 +37,7 @@ import java.util.Optional;
  * @author 유한종
  * @version 1.0
  */
-@Tag(name = "입찰", description = "입찰 요청 처리")
+@Tag(name = "입찰", description = "입찰 관련 요청 처리")
 @Controller
 @RequiredArgsConstructor
 public class BidController {

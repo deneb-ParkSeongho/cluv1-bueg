@@ -32,11 +32,10 @@ import java.util.Optional;
  * @author Lychee
  * @version 1.0
  */
-
+@Tag(name = "선물", description = "선물 관련 요청 처리")
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@Tag(name = "선물하기 컨트롤러", description = "선물하기 컨트롤러 목록")
 public class GiftController {
 
     private final AddressService addressService;
@@ -52,9 +51,8 @@ public class GiftController {
      * @param page 해당 카테고리 상품 페이지
      * @param model 해당 카테고리 상품 Dto, 검색 상품 Dto, 최대 페이지 수
      *
-     * @return "gift/giftMain" 선물하기 메인페이지로 반환
+     * @return 선물하기 메인페이지로 반환
      */
-
     @Operation(summary = "선물하기 카테고리 조회 메소드", description = "선물하기 카테고리 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "선물하기 카테고리 조회"),
@@ -79,7 +77,7 @@ public class GiftController {
      * @param from 문자 발신자
      * @param text 문자 내용
      *
-     * @return new ResponseEntity<Long>(HttpStatus.OK) http 응답 상태코드 반환
+     * @return http 응답 상태코드 반환
      */
     @Operation(summary = "선물하기 배송지 입력 문자 전송 메소드", description = "선물하기 배송지 입력 문자 전송")
     @ApiResponses(value = {
@@ -101,13 +99,12 @@ public class GiftController {
      * @param count 상품 주문 수량
      * @param model 선물하기 form Dto
      *
-     * @return "gift/giftMain" 선물하기 메인페이지로 반환
+     * @return 선물하기 메인페이지로 반환
      */
     @Operation(summary = "선물 배송지 입력 페이지 조회", description = "선물 배송지 입력 페이지")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "선물 배송지 입력 페이지 조회"),
             @ApiResponse(responseCode = "400", description = "선물 배송지 입력 페이지 조회 실패")})
-    // 선물하기 폼
     @GetMapping(value ="/giftForm/{itemId}")
     public String giftForm(@Parameter(description = "상품 아이디") @PathVariable("itemId") Long itemId,@Parameter(description = "상품 주문 수량") @RequestParam("count") Integer count, Model model) {
         GiftDto giftDto = new GiftDto();
@@ -127,7 +124,7 @@ public class GiftController {
      * @param principal 현재 로그인한 회원 정보
      * @param model 선물 완료 알림 메시지, redirect location
      *
-     * @return "gift/giftForm" 선물하기 form 페이지로 반환
+     * @return 선물하기 form 페이지로 반환
      */
     @Operation(summary = "선물하기 메소드", description = "선물하기")
     @ApiResponses(value = {
