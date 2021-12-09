@@ -9,6 +9,8 @@ import com.shop.dto.OrderHistDto;
 import com.shop.dto.OrderItemDto;
 import com.shop.entity.*;
 import com.shop.repository.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,6 +27,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Tag(name = "주문 서비스", description = "주문 서비스 목록")
 public class OrderService {
 
     private final MemberRepository memberRepository;
@@ -136,6 +139,16 @@ public class OrderService {
 
         return this.getPaginatedOrderList(orders, pageable, totalCount);
     }
+
+    /**
+     * 구매/선물 리스트 조회
+     *
+     * @param email 해당 회원의 이메일
+     * @param giftStatus 구매/선물 상태
+     * @param pageable 페이징 처리에 필요한 정보
+     *
+     * @return 페이징 처리된 구매/선물 리스트
+     */
 
     @Transactional(readOnly = true)
     public Page<OrderHistDto> getOrderListStatus(String email, Pageable pageable, GiftStatus giftStatus) {
