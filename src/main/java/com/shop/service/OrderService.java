@@ -22,6 +22,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 주문 서비스
+ *
+ * @author 공통
+ * @version 1.0
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -42,6 +48,12 @@ public class OrderService {
         memberRepository.save(member);
     }
 
+    /**
+     *  태그 주문량 갱신 메소드
+     *
+     * @param item 주문한 상품
+     * @return 태그 주문량 갱신
+     */
     public void processTagTotalSell(Item item) {
         List<ItemTag> itemTag = itemTagRepository.findByItemId(item.getId());
 
@@ -50,6 +62,13 @@ public class OrderService {
         }
     }
 
+    /**
+     *  상품 주문 메소드
+     *
+     * @param orderDto 주문할 상품의 정보가 들어있는 객체
+     * @param email 현재 로그인한 계정의 이메일
+     * @return order.getId() 주문후 주문 아이디 반환
+     */
     public Long order(OrderDto orderDto, String email) {
         Item item = itemRepository.findById(orderDto.getItemId()).orElseThrow(EntityNotFoundException::new);
 
@@ -82,6 +101,13 @@ public class OrderService {
         return order.getId();
     }
 
+    /**
+     *  장바구니에서 주문할 상품 데이터를 전달받아서 주문을 생성
+     *
+     * @param orderDtoList 주문할 상품 목록
+     * @param email 현재 로그인한 계정의 이메일
+     * @return order.getId() 주문아이디 반환
+     */
     public Long orders(List<OrderDto> orderDtoList, String email, Integer usedPoint) {
         Member member = memberRepository.findByEmail(email);
 
@@ -124,11 +150,20 @@ public class OrderService {
         return order.getId();
     }
 
+
     @Transactional(readOnly = true)
     public Order getOrder(Long orderId) {
         return orderRepository.getById(orderId);
     }
 
+    /**
+     *  주문 목록 조회
+     *
+     * @param email 현재 로그인한 계정의 이메일
+     * @param pageable 페이징 정보
+     * @return PageImpl<OrderHistDto>(orderHistDtos, pageable, totalCount)
+     *         페이지 구현 객체를 생성해 반환
+     */
     @Transactional(readOnly = true)
     public Page<OrderHistDto> getOrderList(String email, Pageable pageable) {
         List<Order> orders = orderRepository.findOrders(email, pageable);
@@ -144,6 +179,15 @@ public class OrderService {
 
         return this.getPaginatedOrderList(orders, pageable, totalCount);
     }
+
+    /**
+     * 반품 요청 목록값 메소드
+     *
+     * @param email 현재 로그인한 회원의 이메일
+     * @param pageable 페이징 조건에 맞춰 조회
+     *
+     * @return 주문정보 반환 , 페이징 조건에 맞춘 값을 반환, 반품 상품 수량 합계를 반환
+     */
 
     @Transactional(readOnly = true)
     public Page<OrderHistDto> getReturnList(String email, Pageable pageable) {
@@ -175,6 +219,13 @@ public class OrderService {
         return new PageImpl<OrderHistDto>(orderHistDtos, pageable, totalCount);
     }
 
+    /**
+     *  현재 로그인한 사용자와 주문 데이터를 생성한 사용자가 같은지 검사
+     *
+     * @param orderId 주문 데이터 아이디
+     * @param email 현재 로그인한 계정의 이메일
+     * @return 로그인 사용자와 주문 생성자가 같으면 true, 다르면 false 반환
+     */
     @Transactional(readOnly = true)
     public boolean validateOrder(Long orderId, String email) {
         Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
@@ -185,10 +236,23 @@ public class OrderService {
         return StringUtils.equals(curMember.getEmail(), savedMember.getEmail());
     }
 
+    /**
+     *  주문 취소 메소드
+     *
+     * @param orderId 주문 데이터 아이디
+     * @return order.cancelOrder() 주문취소 상태 변경 메소드 호출 반환
+     */
     public void cancelOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
         order.cancelOrder();
     }
+
+    /**
+     * 반품 요청 메소드
+     *
+     * @param order 반품등록일, 반품가격, 반품수량, 반품상태(N :대기중) 값
+     *
+     */
 
     public void requestReturn(Order order) {
         List<OrderItem> orderItemList = order.getOrderItems();
@@ -208,6 +272,13 @@ public class OrderService {
 
         orderRepository.save(order);
     }
+
+    /**
+     * 반품 확인 메소드
+     *
+     * @param orderId 반품등록일, 반품가격, 반품수량, 반품상태(Y : 완료) 값
+     *
+     */
 
     public void confirmReturn(Long orderId) {
         Order order = this.getOrder(orderId);

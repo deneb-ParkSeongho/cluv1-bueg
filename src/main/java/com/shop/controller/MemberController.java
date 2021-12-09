@@ -58,6 +58,14 @@ public class MemberController {
     private final EmailService emailService;
     private final AuthTokenService authTokenService;
 
+    /**
+     * 회원가입 페이지로 이동
+     *
+     * @param model 회원정보 필수 입력값을 담는 객체
+     *
+     * @return memberForm 회원가입 페이지로 반환
+     */
+
     @GetMapping(value = "/new")
     public String memberForm(Model model) {
         model.addAttribute("banks", Bank.values());
@@ -93,10 +101,28 @@ public class MemberController {
         return "redirect:/members/login";
     }
 
+    /**
+     * 로그인 페이지로 이동
+     *
+     *
+     *
+     * @return memberLoginForm 로그인 페이지로 반환
+     */
+
     @GetMapping(value = "/login")
     public String loginMember() {
         return "/member/memberLoginForm";
     }
+
+
+    /**
+     * 로그인 에러 페이지로 이동
+     *
+     * @param model 로그인 에러메세지를 담는 객체
+     *
+     * @return memberLoginForm 로그인 페이지로 반환
+     */
+
 
     @GetMapping(value = "/login/error")
     public String loginError(Model model) {

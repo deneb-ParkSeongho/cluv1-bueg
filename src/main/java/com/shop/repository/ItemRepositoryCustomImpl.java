@@ -24,6 +24,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 상품 사용자 정의 레포지토리 구현
+ *
+ * @author 공통
+ * @version 1.0
+ */
 public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
     private JPAQueryFactory queryFactory;
@@ -32,10 +38,20 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+    /**
+     * 상품 판매 상태 따른 조건 생성
+     * @param searchSellStatus  상품 판매 상태 조건
+     * @return 상태가 전체(NULL)일 경우 NULL을 리턴해 해당 조건 무시
+     */
     private BooleanExpression searchSellStatusEq(ItemSellStatus searchSellStatus) {
         return searchSellStatus == null ? null : QItem.item.itemSellStatus.eq(searchSellStatus);
     }
 
+    /**
+     * 검색 시간 조건에 따른 조건 생성
+     * @param searchDateType  검색 시간 조건
+     * @return 해당 시간 이후로 등록된 상품만 조회
+     */
     private BooleanExpression regDtsAfter(String searchDateType) {
         LocalDateTime dateTime = LocalDateTime.now();
 
@@ -54,6 +70,12 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return QItem.item.regTime.after(dateTime);
     }
 
+    /**
+     * 입력 값에 따른 포함항목 검색 조건
+     * @param searchBy  상품 검색 조건
+     * @param searchQuery
+     * @return
+     */
     private BooleanExpression searchByLike(String searchBy, String searchQuery) {
         if(StringUtils.equals("itemNm", searchBy)) {
             return QItem.item.itemNm.like("%" + searchQuery + "%");
@@ -109,6 +131,13 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return StringUtils.isEmpty(searchQuery) ? null : QItem.item.itemNm.like("%" + searchQuery + "%");
     }
 
+    /**
+     * 조회조건과 페이징 정보에 따라 상품정보를 찾는 쿼리 메소드(상품관리페이지)
+     * @param itemSearchDto 상품 조회 조건
+     * @param pageable 페이징 정보
+     * @return PageImpl(content, pageable, total)
+     *         조회조건과 페이징 정보에 따른 상품 정보 반환
+     */
     @Override
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
         QueryResults<Item> results = queryFactory
@@ -128,6 +157,13 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    /**
+     * 조회조건과 페이징 정보에 따라 상품정보를 찾는 쿼리 메소드(메인페이지)
+     * @param itemSearchDto 상품 조회 조건
+     * @param pageable 페이징 정보
+     * @return PageImpl<>(content, pageable, total)
+     *         조회조건과 페이징 정보에 따른 상품 정보 반환
+     */
     @Override
     public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
         QItem item = QItem.item;
@@ -193,6 +229,14 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    /**
+     * 조회조건과 페이징 정보, 태그에 따라 상품정보를 찾는 쿼리 메소드(태그검색 페이지)
+     * @param itemSearchDto 상품 조회 조건
+     * @param pageable 페이징 정보
+     * @param filters 적용된 태그들
+     * @return PageImpl<>(content, pageable, total)
+     *         조회조건과 페이징 정보에 따른 상품 정보 반환
+     */
     public Page<MainItemDto> getDetailSearchPage(String[] filters, ItemSearchDto itemSearchDto, Pageable pageable) {
         QItem item = QItem.item;
         QItemImg itemImg = QItemImg.itemImg;
