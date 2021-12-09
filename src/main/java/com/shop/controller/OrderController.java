@@ -48,6 +48,7 @@ import java.util.Optional;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
+@Tag(name = "주문 컨트롤러", description = "주문 컨트롤러 목록")
 public class OrderController {
 
     private final OrderService orderService;
@@ -113,7 +114,18 @@ public class OrderController {
         return "order/orderHist";
     }
 
-    // 구매/선물 상태 조회
+    /**
+     * 구매/선물 이력 조회 메소드
+     *
+     * @param page 페이지 정보
+     * @param giftStatus 구매/선물 상태
+     * @param model 구매/선물 이력 정보
+     * @param principal 현재 로그인한 회원 정보
+     *
+     * @return "order/orderHist" 구매/선물 이력 페이지로 반환
+     */
+
+    @Operation(summary = "구매/선물 이력 조회 메소드", description = "구매/선물 이력 조회")
     @GetMapping(value = {"/ordersStatus/{status}", "/ordersStatus/{page}"})
     public String orderStatus(@PathVariable("page") Optional<Integer> page, @PathVariable(required = false, value = "status") GiftStatus giftStatus, Principal principal, Model model){
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);
